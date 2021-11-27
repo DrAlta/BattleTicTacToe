@@ -65,7 +65,7 @@ func _process(delta):
 		for btn in board:
 			var id = btn.id
 			if id in offense:
-				print(str(id)+ "is D in proc")
+				#print(str(id)+ "is D in proc")
 
 				if selected == id - 1:
 					btn.get_node("Defender").rotation_degrees = 0
@@ -226,7 +226,7 @@ func onTicTacBtnPressed( button ):
 				print(game.player + " attacked " + str(button))
 				place_mark(btn, game.player)
 
-				do_move([selected, button])
+				do_move([button, selected])
 
 				AIturn()
 

@@ -32,7 +32,8 @@ _global_script_class_icons={
 
 [application]
 
-config/name="test"
+config/name="Battle Tic-Tac-Toe"
+config/description="Tic-Tac-Toe but you can use an existing piece to capture one of your opponent's pieces."
 run/main_scene="res://Main.tscn"
 config/icon="res://icon.png"
 
@@ -42,4 +43,5 @@ common/enable_pause_aware_picking=true
 
 [rendering]
 
+quality/driver/driver_name="GLES2"
 environment/default_environment="res://default_env.tres"

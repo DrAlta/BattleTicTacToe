@@ -168,8 +168,8 @@ class MonteCarloTreeSearchNode:
 			choices_weights.append(
 				c._results[1] / c._number_of_visits
 			) 
-		#return best_child(0.0)
-		return(children[_argmax(choices_weights)])
+		return best_child(0.0)
+		#return(children[_argmax(choices_weights)])
 
 
 func main():
@@ -290,7 +290,7 @@ class TicTacToe:
 		pass
 
 	func winner(won):
-		if player == "O":
+		if won == "O":
 			return(1)
 		else:
 			return(-1)
