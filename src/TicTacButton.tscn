@@ -1,0 +1,41 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Hover.png" type="Texture" id=1]
+[ext_resource path="res://TicTacButton.gd" type="Script" id=2]
+[ext_resource path="res://Attaker.tscn" type="PackedScene" id=3]
+
+[node name="TicTacButton" type="TextureButton"]
+margin_right = 128.0
+margin_bottom = 128.0
+texture_hover = ExtResource( 1 )
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Attacker" type="Node2D" parent="."]
+visible = false
+position = Vector2( 64, 64 )
+
+[node name="Arrow" parent="Attacker" instance=ExtResource( 3 )]
+margin_left = -33.0
+margin_right = -33.0
+
+[node name="Tween" type="Tween" parent="Attacker/Arrow"]
+repeat = true
+playback/repeat = true
+
+[node name="Defender" type="Node2D" parent="."]
+visible = false
+position = Vector2( 64, 64 )
+
+[node name="Arrow" parent="Defender" instance=ExtResource( 3 )]
+margin_left = -33.0
+margin_right = -33.0
+
+[node name="Tween" type="Tween" parent="Defender/Arrow"]
+repeat = true
+playback/repeat = true
+
+[connection signal="mouse_entered" from="." to="." method="_on_TicTacButton_mouse_entered"]
+[connection signal="pressed" from="." to="." method="_on_TicTacButton_pressed"]
