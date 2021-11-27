@@ -43,11 +43,11 @@ class MonteCarloTreeSearchNode:
 	# Returns the difference of wins - losses
 		var wins = _results[1]
 		var loses = _results[-1]
-		return(wins - loses)
+		return(float(wins - loses))
 
 	func n(): 
 	# Returns the number of times each node is visited.
-		return(_number_of_visits)
+		return(float(_number_of_visits))
 
 	func expand(): 
 	# From the present state, next state is generated depending on the action which 
@@ -81,8 +81,8 @@ class MonteCarloTreeSearchNode:
 		
 			var possible_moves = current_rollout_state.get_legal_actions()
 		
-			var action = rollout_policy(possible_moves)
-			current_rollout_state = current_rollout_state.move(action)
+			var action_x = rollout_policy(possible_moves)
+			current_rollout_state = current_rollout_state.move(action_x)
 		return current_rollout_state.game_result()
 
 	func backpropagate(result):
@@ -95,7 +95,7 @@ class MonteCarloTreeSearchNode:
 	# All the actions are poped out of _untried_actions one by one. When it becomes empty, that is when the size is zero, it is fully expanded.
 		return (_untried_actions.size() == 0)
 
-	func best_child(c_param=0.5):
+	func best_child(c_param=sqrt(2)):
 	# Once fully expanded, this function selects the best child out of the children array. The first term in the formula corresponds to exploitation and the second term corresponds to exploration.
 		var choices_weights = []
 #		print("Children:" + str(children))
@@ -161,15 +161,17 @@ class MonteCarloTreeSearchNode:
 			v.backpropagate(reward)
 		var choices_weights = []
 #		print("Children:" + str(children))
-		for c in children:
+		for i in children.size():
+			var c = children[i]
 			print(str(c.parent_action) + "has" + \
 			str(c._results[1]) + " of " +\
-			str(c._number_of_visits))
+			str(c._number_of_visits)+ " = " +str(c._results[1] / float(c._number_of_visits)))
 			choices_weights.append(
-				c._results[1] / c._number_of_visits
+				c._results[1] / float(c._number_of_visits)
 			) 
 		return best_child(0.0)
-		#return(children[_argmax(choices_weights)])
+		print(children[_argmax(choices_weights)].parent_action)
+		return(children[_argmax(choices_weights)])
 
 
 func main():
@@ -365,8 +367,8 @@ class TicTacToe:
 	# Modify according to your game or needs. Returns 1 or 0 or -1 depending on your state 
 	# corresponding to win, tie or a loss.
 		#rows
-		var block =[]
-		var win = []
+		var blocks =[]
+		var winning = []
 
 		var opponent = "X"
 		if player == "X":
@@ -379,13 +381,13 @@ class TicTacToe:
 				if piece== " ":
 					take = x*3+p
 				elif piece == opponent:
-					total ++ 1
+					total += 1
 				elif piece == player:
 					total -= 1
 			if total == 2:
-				block.append(take)
+				blocks.append(take)
 			elif total == -2:
-				win.append(take)
+				winning.append(take)
 #	for x in range(1,4):
 #		for c in range(3):
 
@@ -398,18 +400,19 @@ class TicTacToe:
 					if piece== " ":
 						take = (c*3)+x
 					elif piece == opponent:
-						total ++ 1
+						total += 1
 					elif piece == player:
 						total -= 1
 			if total == 2:
-				block.append(take)
+				blocks.append(take)
 			elif total == -2:
-				win.append(take)
-
+				winning.append(take)
+		print("wins:"+str(winning) + " blocks:" + str(blocks))
+	
 
 		#diagnals?
-		if get_position(5)[0] != " " and ((get_position(1)[0] == get_position(5)[0] and get_position(5)[0] == get_position(9)[0]) or (get_position(3)[0] == get_position(5)[0] and get_position(5)[0] == get_position(7)[0])):
-			printraw("diag|")
-			return(winner(get_position(5)[0]))
-		return(0)
+#		if get_position(5)[0] != " " and ((get_position(1)[0] == get_position(5)[0] and get_position(5)[0] == get_position(9)[0]) or (get_position(3)[0] == get_position(5)[0] and get_position(5)[0] == get_position(7)[0])):
+#			printraw("diag|")
+#			return(winner(get_position(5)[0]))
+#		return(0)
 	
