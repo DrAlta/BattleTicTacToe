@@ -87,16 +87,16 @@ func _process(delta):
 		for btn in board:
 			var id = btn.id
 			if id in defense:
-				if selected == id + 1:
+				if selected == id + 1 and selected in game.attackers[id]:
 					btn.get_node("Attacker").rotation_degrees = 180
 					btn.get_node("Attacker").visible = true
-				elif selected == id - 1:
+				elif selected == id - 1 and selected in game.attackers[id]:
 					btn.get_node("Attacker").rotation_degrees = 0
 					btn.get_node("Attacker").visible = true
-				elif selected == id + 3:
+				elif selected == id + 3 and selected in game.attackers[id]:
 					btn.get_node("Attacker").rotation_degrees = -90
 					btn.get_node("Attacker").visible = true
-				elif selected == id - 3:
+				elif selected == id - 3 and selected in game.attackers[id]:
 					btn.get_node("Attacker").rotation_degrees = 90
 					btn.get_node("Attacker").visible = true
 				else:

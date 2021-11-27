@@ -65,9 +65,6 @@ class MonteCarloTreeSearchNode:
 	# This is used to check if the current node is terminal or not. Terminal node is reached when the game is over.
 		#state.print_board()get_position(
 		#printraw("#")
-		if state.debug == true:
-
-			print("62:is game over"+str(state.is_game_over()))
 		if state.get_good_actions().size() == 0:
 			return(true)
 		return(state.is_game_over())
@@ -76,9 +73,6 @@ class MonteCarloTreeSearchNode:
 		var current_rollout_state = self.state
 	
 		while not current_rollout_state.is_game_over():
-			if state.debug == true:
-				print("71:is game over"+str(current_rollout_state.is_game_over()))
-		
 			var possible_moves = current_rollout_state.get_good_actions()
 		
 			var action_x = rollout_policy(possible_moves)
@@ -179,7 +173,6 @@ func main():
 		var selected_node = root.best_action()
 		print("129"+str(selected_node.parent_action))
 		selected_node.state.print_board()
-		#selected_node.state.debug=true
 		
 		while(not selected_node.is_terminal_node()):
 			root = MonteCarloTreeSearchNode.new(TicTacToe.new(selected_node.state.board, selected_node.state.player))
@@ -191,7 +184,6 @@ func main():
 		return
 
 class TicTacToe:
-	var debug = false
 	var board
 	var player : String
 
@@ -201,8 +193,6 @@ class TicTacToe:
 		board[position-1] = piece
 
 	func get_position(position):
-#		if position>9:
-#			print("L205:fuck")
 		return(board[position-1])
 	func convert_piece(piece):
 		if piece[1] == 0:
@@ -248,15 +238,11 @@ class TicTacToe:
 			opponent= ["O", " "]
 			new_state.player = "O"
 		
-		if my_action[1]>9:
-			print("L252:fuck")
 		if get_position(my_action[1])[0] in opponent:
 			if (my_action[0] == my_action[1]):
 				new_state.set_position(my_action[1], [player, 1])
 				return(new_state)
 			else:
-				if my_action[0]>9:
-					print("L259:fuck")
 				if get_position(my_action[0]) == [player, 1]:
 					new_state.set_position(my_action[0], [" ", 1])#new_piece)
 					new_state.set_position(my_action[1], [player, 0])
@@ -282,12 +268,8 @@ class TicTacToe:
 
 		for x in range(1, 10):
 			
-			if x>9:
-				print("L259:fuck")
 			if get_position(x)[0] in opponent:
 				for attacker in attackers[x-1]:
-					if attacker>9:
-						print("L290:fuck")
 					if get_position(attacker) == [player, 1]:
 						offense.append(attacker)
 						defense.append(x)
@@ -303,12 +285,8 @@ class TicTacToe:
 
 		for x in heuristic():
 			
-			if x>9:
-				print("L307:fuck")
 			if get_position(x)[0] == opponent:
 				for attacker in attackers[x-1]:
-					if attacker>9:
-						print("L311:fuck")
 					if get_position(attacker) == [player, 1]:
 						moves.append([int(attacker), int(x)])
 			if get_position(x)[0] == " ":
@@ -407,16 +385,16 @@ class TicTacToe:
 		board = my_board
 		player = turn
 
-	func check_for_inval_pos(a:Array):
-		for x in a:
-			if x > 9:
-				print("L413: Too big:"+str(x)) 
+	func _erase_array(a:Array, remove:Array):
+		for x in remove:
+			a.erase(x)
+		return(a)
 
 	func heuristic():
 	# Modify according to your game or needs. Returns 1 or 0 or -1 depending on your state 
 	# corresponding to win, tie or a loss.
 		#rows
-		var blocks =[]
+		var blocks = [1,2,3,4,5,6,7,8,9]
 		var winning = []
 
 		var opponent = "X"
@@ -436,8 +414,10 @@ class TicTacToe:
 #					if total == -2:
 #						print("L417:"+str((x*3)+p))
 			if total == 2:
+				var filter = [1,2,3,4,5,6,7,8,9]
 				for b in range(1,4):
-					blocks.append((x*3)+b)
+					filter.erase((x*3)+b)
+				blocks = _erase_array(blocks, filter)
 			elif total == -2:
 				for w in range(1,4):
 					winning.append((x*3)+w)
@@ -452,8 +432,10 @@ class TicTacToe:
 					if piece == opponent:
 						total += 1
 						if total == 2:
+							var filter = [1,2,3,4,5,6,7,8,9]
 							for b in range(3):
-								blocks.append((b*3)+x)
+								filter.erase((b*3)+x)
+							blocks = _erase_array(blocks, filter)
 					elif piece == player:
 						total -= 1
 						if total == -2:
@@ -469,7 +451,7 @@ class TicTacToe:
 				elif piece == player:
 					total -= 1
 		if total == 2:
-			blocks.append_array([1,5,9])
+			blocks = _erase_array(blocks,[2,3,4,6,7,8])
 		elif total == -2:
 			winning.append_array([1,5,9])
 
@@ -482,7 +464,7 @@ class TicTacToe:
 				elif piece == player:
 					total -= 1
 		if total == 2:
-			blocks.append_array([3,5,7])
+			blocks = _erase_array(blocks, [1,2,4,6,8,9])
 		elif total == -2:
 			winning.append_array([])
 		#if ther are instant wins take them
