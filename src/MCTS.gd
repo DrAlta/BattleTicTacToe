@@ -163,14 +163,14 @@ class MonteCarloTreeSearchNode:
 #		print("Children:" + str(children))
 		for i in children.size():
 			var c = children[i]
-			print(str(c.parent_action) + "has" + \
+			print("L166:"+str(c.parent_action) + "has" + \
 			str(c._results[1]) + " of " +\
 			str(c._number_of_visits)+ " = " +str(c._results[1] / float(c._number_of_visits)))
 			choices_weights.append(
 				c._results[1] / float(c._number_of_visits)
 			) 
 		return best_child(0.0)
-		print(children[_argmax(choices_weights)].parent_action)
+		print("L173:"+str(children[_argmax(choices_weights)].parent_action))
 		return(children[_argmax(choices_weights)])
 
 
@@ -186,8 +186,8 @@ func main():
 			selected_node = root.best_action()
 			print("134" + str(selected_node.parent_action))
 			selected_node.state.print_board()
-		print(selected_node.state.game_result())
-		print(selected_node.state.player)
+		print("L189:"+str(selected_node.state.game_result()))
+		print("L190:"+str(selected_node.state.player))
 		return
 
 class TicTacToe:
@@ -197,18 +197,29 @@ class TicTacToe:
 
 
 	func set_position(position:int, piece: Array):
+		assert(typeof(piece[1])==typeof(1))
 		board[position-1] = piece
 
 	func get_position(position):
 		return(board[position-1])
+	func convert_piece(piece):
+		if piece[1] == 0:
+			if piece[0] == "X":
+				return("v")
+			elif piece[0] == "O":
+				return("c")
+			else:
+				return(" ")
+		else:
+			return(piece[0])
 
 	func print_board():
 		var pp=""
 		for x in range(9):
-			pp = pp + str(board[x][0])+ str(board[x][1])
+			pp = pp + convert_piece(board[x])
 			if x % 3 == 2:
 				pp = pp + "\n"
-		print(pp)
+		print(str(pp))
 
 	const attackers= [
 		[2,4],     #1
@@ -241,7 +252,7 @@ class TicTacToe:
 				return(new_state)
 			else:
 				if get_position(my_action[0]) == [player, 1]:
-					new_state.set_position(my_action[0], [" ", " "])#new_piece)
+					new_state.set_position(my_action[0], [" ", 1])#new_piece)
 					new_state.set_position(my_action[1], [player, 0])
 					return(new_state)
 				else:
@@ -307,7 +318,7 @@ class TicTacToe:
 			if get_position((x*3) + 1)[0] != " " and \
 			get_position((x*3) + 1)[0] == get_position((x*3) + 2)[0] and \
 			get_position((x*3) + 2)[0] == get_position((x*3) + 3)[0]:
-				printraw("row|")
+				#printraw("row|")
 				return(winner(get_position((x*3) + 1)[0]))
 
 		#collomes?
@@ -315,12 +326,12 @@ class TicTacToe:
 			if get_position((0)+c)[0] != " " and \
 			get_position(   (0)+c)[0] == get_position((3)+c)[0] and \
 			get_position(   (3)+c)[0] == get_position((6)+c)[0]:
-				printraw("col|")
+				#printraw("col|")
 				return(winner(get_position((0)+c)[0]))
 
 		#diagnals?
 		if get_position(5)[0] != " " and ((get_position(1)[0] == get_position(5)[0] and get_position(5)[0] == get_position(9)[0]) or (get_position(3)[0] == get_position(5)[0] and get_position(5)[0] == get_position(7)[0])):
-			printraw("diag|")
+			#printraw("diag|")
 			return(winner(get_position(5)[0]))
 		return(0)
 
@@ -332,7 +343,7 @@ class TicTacToe:
 			if get_position((x*3) + 1)[0] != " " and \
 			get_position((x*3) + 1)[0] == get_position((x*3) + 2)[0] and \
 			get_position((x*3) + 2)[0] == get_position((x*3) + 3)[0]:
-				print("row win")
+				#print("row win")
 				return
 
 		#collomes?
@@ -341,7 +352,7 @@ class TicTacToe:
 			get_position(   (0)+c)[0] == get_position((3)+c)[0] and \
 			get_position(   (3)+c)[0] == get_position((6)+c)[0]:
 				#print_board()
-				print("col win")
+				#print("col win")
 				return
 
 		#diagnals?
@@ -359,7 +370,7 @@ class TicTacToe:
 		return(game_result() != 0)
 
 
-	func _init(my_board = [[" ", " "],[" ", " "],[" ", " "],[" ", " "],[" ", " "],[" ", " "],[" ", " "],[" ", " "],[" ", " "],], turn = "X"):
+	func _init(my_board = [[" ", 1],[" ", 1],[" ", 1],[" ", 1],[" ", 1],[" ", 1],[" ", 1],[" ", 1],[" ", 1],], turn = "X"):
 		board = my_board
 		player = turn
 

@@ -160,10 +160,10 @@ func AI_move():
 	# calculate move
 	var root = MonteCarloTreeSearch.MonteCarloTreeSearchNode.new(MonteCarloTreeSearch.TicTacToe.new(game.board, game.player))
 	var selected_node = root.best_action()
-	print(game.get_legal_actions())
+	#print("L163:"+str(game.get_legal_actions()))
 	var move = selected_node.parent_action
-	print("AI predicts:")
-	selected_node.state.print_board()
+	#print("AI predicts:")
+	#selected_node.state.print_board()
 
 	#var move = MonteCarloTreeSearch.MonteCarloTreeSearchNode.new(game).best_action().parent_action
 	print("AI doing " + str(move))
