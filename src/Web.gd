@@ -141,7 +141,6 @@ func do_move(move):
 	if move[0] != move[1]:
 		board[move[0] - 1].reset()
 
-
 	game = game.move(move)
 #	game.print_board()
 	game.print_board()
@@ -153,7 +152,8 @@ func do_move(move):
 		offense = battles[0]
 		defense = battles[1]
 	else:
-		print("won by"+str(game.win_result()))
+		print(str(game.player)+" lost")
+		move_phase = PEACE
 		showWinDialog("Game Over",game.player + "won!")
 		return(false)
 	return(true)
@@ -180,6 +180,11 @@ func AI_move():
 			btn.get_node("Attacker").visible = false
 			btn.get_node("Defender").visible = false
 			btn.get_node("AI").visible = false
+			if btn.id in offense:
+				btn.set_attack_hover(true)
+			else:
+				if game.get_position(btn.id)[1] > 0:
+					btn.set_attack_hover(false)
 		mutex.unlock()
 		print("AI mutex unlock")
 

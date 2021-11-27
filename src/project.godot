@@ -34,7 +34,7 @@ _global_script_class_icons={
 
 config/name="Tic-Tac-Battle"
 config/description="Tic-Tac-Toe but you can use an existing piece to capture one of your opponent's pieces."
-run/main_scene="res://Main.tscn"
+run/main_scene="res://Web.tscn"
 config/icon="res://Icon.png"
 
 [display]

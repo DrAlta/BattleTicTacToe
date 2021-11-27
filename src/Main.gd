@@ -142,6 +142,7 @@ func clearBoard():
 	game = MonteCarloTreeSearch.TicTacToe.new()
 	for btn in board:
 		btn.reset()
+
 func do_move(move):
 	print("doing move:" + str(move))
 	if move[0] != move[1]:
@@ -186,11 +187,7 @@ func AI_move():
 			btn.get_node("Attacker").visible = false
 			btn.get_node("Defender").visible = false
 			btn.get_node("AI").visible = false
-			if btn.id in offense:
-				btn.set_attack_hover(true)
-			else:
-				if game.get_position(btn.id)[1] > 0:
-					btn.set_attack_hover(false)
+			btn.set_attack_hover(false)
 		mutex.unlock()
 		print("AI mutex unlock")
 
