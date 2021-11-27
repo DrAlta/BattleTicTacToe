@@ -296,9 +296,9 @@ class TicTacToe:
 			if get_position(x)[0] in opponent:
 				for attacker in attackers[x-1]:
 					if get_position(attacker) == [player, 1]:
-						moves.append([attacker, x])
+						moves.append([int(attacker), int(x)])
 			if get_position(x)[0] == " ":
-				moves.append([x,x])
+				moves.append([int(x),int(x)])
 		return(moves)
 		pass
 

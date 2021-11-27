@@ -83,7 +83,7 @@ func _process(delta):
 					btn.get_node("Defender").visible = false
 			else:
 				btn.get_node("Defender").visible = false
-	if move_phase == ATTACKING :#or (buttons[id - 1].value == "O"):
+	if false and move_phase == ATTACKING :#or (buttons[id - 1].value == "O"):
 		for btn in board:
 			var id = btn.id
 			if id in defense:
@@ -106,21 +106,30 @@ func _process(delta):
 func _exit_tree():
 	thread.wait_to_finish()
 
+func legal_ka(move):
+	for x in legal_moves:
+		if move == [5, 8]:
+			print("good move")
+			return(true)
+	return(false)
+
 func onTicTacBtnHover(id):
 	mutex.lock()
 	if move_phase == PEACE :#or (buttons[id - 1].value == "O"):
 		for btn in board:
-			if id in offense:
-				if btn.id == id - 1:
+			if btn.id == 8:
+				print("L114:" + str([id, btn.id]))
+			if legal_ka([int(id), int(btn.id)]):
+				if id == btn.id + 1:
 					btn.get_node("Attacker").rotation_degrees = 180
 					btn.get_node("Attacker").visible = true
-				elif btn.id == id + 1:
+				elif id == btn.id - 1:
 					btn.get_node("Attacker").rotation_degrees = 0
 					btn.get_node("Attacker").visible = true
-				elif btn.id == id - 3:
+				elif id == btn.id + 3:
 					btn.get_node("Attacker").rotation_degrees = -90
 					btn.get_node("Attacker").visible = true
-				elif btn.id == id + 3:
+				elif id == btn.id - 3:
 					btn.get_node("Attacker").rotation_degrees = 90
 					btn.get_node("Attacker").visible = true
 				else:
@@ -145,7 +154,8 @@ func do_move(move):
 	game = game.move(move)
 #	game.print_board()
 	game.print_board()
-	print("possible move=" + str(game.get_legal_actions()))
+	legal_moves = game.get_legal_actions()
+	print("possible moves=" + str(legal_moves))
 	var result = game.game_result()
 	if result == 0 :
 		var battles = game.get_battles()
