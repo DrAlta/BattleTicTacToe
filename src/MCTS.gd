@@ -146,7 +146,7 @@ class MonteCarloTreeSearchNode:
 
 	func best_action():
 	# This is the best action function which returns the node corresponding to best possible move. The step of expansion, simulation and backpropagation are carried out by the code above.
-		var simulation_no = 3000
+		var simulation_no = 1000
 #		for action_x in _untried_actions:
 #			var next_state = state.move(action_x)
 #			var child_node = MonteCarloTreeSearchNode.new(next_state, self, action_x)
@@ -460,7 +460,7 @@ class TicTacToe:
 		if total == 2:
 			blocks.append_array([3,5,7])
 		elif total == -2:
-			winning.append_array([3,5,7])
+			winning.append_array([])
 		if winning.empty():
 			if blocks.empty():
 				return([1,2,3,4,5,6,7,8,9])
