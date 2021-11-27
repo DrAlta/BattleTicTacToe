@@ -310,7 +310,7 @@ class TicTacToe:
 		if player == "X":
 			opponent= ["O", "c"]
 
-		for x in range(1,9):
+		for x in range(1,10):
 			
 			if get_position(x)[0] in opponent:
 				for attacker in attackers[x-1]:
@@ -406,17 +406,21 @@ class TicTacToe:
 		for x in range(3):
 			var total = 0
 			for p in range(1,4):
-				var piece = get_position(x*3+p)[0]
+				var piece = get_position((x*3)+p)[0]
 				if piece == opponent:
 					total += 1
+					if total == -2:
+						print("L413:"+str((x*3)+p))
 				elif piece == player:
 					total -= 1
+					if total == -2:
+						print("L417:"+str((x*3)+p))
 			if total == 2:
 				for b in range(1,4):
-					blocks.append(x*3+b)
+					blocks.append((x*3)+b)
 			elif total == -2:
 				for w in range(1,4):
-					winning.append(x*3+w)
+					winning.append((x*3)+w)
 #	for x in range(1,4):
 #		for c in range(3):
 
@@ -429,12 +433,12 @@ class TicTacToe:
 						total += 1
 						if total == 2:
 							for b in range(1,4):
-								blocks.append((c*3)+b)
+								blocks.append((b*3)+x)
 					elif piece == player:
 						total -= 1
 						if total == -2:
-							for w in range(1,4):
-								winning.append((c*3)+w)
+							for w in range(0,3):
+								winning.append((w*3)+x)
 
 		#\diag
 		var total = 0
@@ -465,8 +469,10 @@ class TicTacToe:
 			if blocks.empty():
 				return([1,2,3,4,5,6,7,8,9])
 			else:
+				#print("block")
 				return(blocks)
 		else:
+			#print("iwin")
 			return(winning)
 #		print("wins:"+str(winning) + " blocks:" + str(blocks))
 	

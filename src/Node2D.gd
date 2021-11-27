@@ -28,10 +28,10 @@ func _ready():
 #			print((c*3)+x)
 	print(
 		MonteCarloTreeSearch.TicTacToe.new(
-			[["O",1],["X",1],["X",1],
-			["X",1],[" ",1],["X",1],
-			["X",1],[" ",1],["O",1]]
-		).block()
+			[["X",1],[" ",1],[" ",1],
+			["O",1],["X",1],[" ",1],
+			["O",1],["X",1],["O",1]]
+		).heuristic()
 	)
 #	MonteCarloTreeSearch.new().main()
 	print("done")

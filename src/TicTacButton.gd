@@ -2,9 +2,13 @@ extends TextureButton
 
 const otex = preload("res://O.png")
 const ogtex = preload("res://OGlow.png")
+const ohtex = preload("res://OHover.png")
+
 const xtex = preload("res://X.png")
 const xgtex = preload("res://XGlow.png")
+const xhtex = preload("res://XHover.png")
 const hover = preload("res://Hover.png")
+
 var tween_node : Tween
 
 var piece = " "
@@ -24,6 +28,18 @@ func _ready():
 	tween_node.start()
 	reset()
 
+func set_attack_hover(x:bool):
+	if x:
+		if piece == "X":
+			texture_hover = xhtex
+		elif piece == "O":
+			texture_hover = ohtex
+	else:
+		if piece == "X":
+			texture_hover = xgtex
+		elif piece == "O":
+			texture_hover = ogtex
+			
 
 func setX():
 	if piece == "O":

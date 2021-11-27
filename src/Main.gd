@@ -90,16 +90,16 @@ func _process(delta):
 		for btn in board:
 			var id = btn.id
 			if id in defense:
-				if selected == id + 1:
+				if selected == game.attackers[id] and selected in game.attackers[id]:
 					btn.get_node("Attacker").rotation_degrees = 180
 					btn.get_node("Attacker").visible = true
-				elif selected == id - 1:
+				elif selected == id - 1 and selected in game.attackers[id]:
 					btn.get_node("Attacker").rotation_degrees = 0
 					btn.get_node("Attacker").visible = true
-				elif selected == id + 3:
+				elif selected == id + 3 and selected in game.attackers[id]:
 					btn.get_node("Attacker").rotation_degrees = -90
 					btn.get_node("Attacker").visible = true
-				elif selected == id - 3:
+				elif selected == id - 3 and selected in game.attackers[id]:
 					btn.get_node("Attacker").rotation_degrees = 90
 					btn.get_node("Attacker").visible = true
 				else:
@@ -146,7 +146,6 @@ func do_move(move):
 	if move[0] != move[1]:
 		board[move[0] - 1].reset()
 
-
 	game = game.move(move)
 #	game.print_board()
 	game.print_board()
@@ -158,7 +157,8 @@ func do_move(move):
 		offense = battles[0]
 		defense = battles[1]
 	else:
-		print("won by"+str(game.win_result()))
+		print(str(game.player)+" lost")
+		move_phase = PEACE
 		showWinDialog("Game Over",game.player + "won!")
 		return(false)
 	return(true)
@@ -185,6 +185,11 @@ func AI_move():
 			btn.get_node("Attacker").visible = false
 			btn.get_node("Defender").visible = false
 			btn.get_node("AI").visible = false
+			if btn.id in offense:
+				btn.set_attack_hover(true)
+			else:
+				if game.get_position(btn.id)[1] > 0:
+					btn.set_attack_hover(false)
 		mutex.unlock()
 		print("AI mutex unlock")
 

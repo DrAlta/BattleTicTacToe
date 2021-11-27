@@ -18,6 +18,7 @@ __meta__ = {
 [node name="Attacker" type="Node2D" parent="."]
 visible = false
 position = Vector2( 64, 64 )
+z_index = -1
 
 [node name="Arrow" parent="Attacker" instance=ExtResource( 3 )]
 margin_left = -33.0
