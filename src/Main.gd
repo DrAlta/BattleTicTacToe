@@ -46,7 +46,7 @@ func _ready():
 	cancelBtn.connect("pressed", self, "onQuit")
 	winDialog.get_ok().set_text("Play Again!")
 
-func _process(delta):
+func _process(_delta):
 	if move_phase == START_THINKING:
 		move_phase == THINKING
 		#print("_process mutex lock")
@@ -90,7 +90,7 @@ func _process(delta):
 		for btn in board:
 			var id = btn.id
 			if id in defense:
-				if selected == game.attackers[id] and selected in game.attackers[id]:
+				if selected == id + 1 and selected in game.attackers[id]:
 					btn.get_node("Attacker").rotation_degrees = 180
 					btn.get_node("Attacker").visible = true
 				elif selected == id - 1 and selected in game.attackers[id]:
@@ -139,6 +139,7 @@ func clearBoard():
 	currentRound = 0
 	winner = false
 	# Resets the board
+	game = MonteCarloTreeSearch.TicTacToe.new()
 	for btn in board:
 		btn.reset()
 func do_move(move):

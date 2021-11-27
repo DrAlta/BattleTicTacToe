@@ -146,7 +146,7 @@ class MonteCarloTreeSearchNode:
 
 	func best_action():
 	# This is the best action function which returns the node corresponding to best possible move. The step of expansion, simulation and backpropagation are carried out by the code above.
-		var simulation_no = 1000
+		var simulation_no = 300
 #		for action_x in _untried_actions:
 #			var next_state = state.move(action_x)
 #			var child_node = MonteCarloTreeSearchNode.new(next_state, self, action_x)
@@ -170,8 +170,8 @@ class MonteCarloTreeSearchNode:
 				c._results[1] / float(c._number_of_visits)
 			) 
 		return best_child(0.0)
-		print("L173:"+str(children[_argmax(choices_weights)].parent_action))
-		return(children[_argmax(choices_weights)])
+#		print("L173:"+str(children[_argmax(choices_weights)].parent_action))
+#		return(children[_argmax(choices_weights)])
 
 
 func main():
@@ -201,6 +201,8 @@ class TicTacToe:
 		board[position-1] = piece
 
 	func get_position(position):
+#		if position>9:
+#			print("L205:fuck")
 		return(board[position-1])
 	func convert_piece(piece):
 		if piece[1] == 0:
@@ -246,11 +248,15 @@ class TicTacToe:
 			opponent= ["O", " "]
 			new_state.player = "O"
 		
+		if my_action[1]>9:
+			print("L252:fuck")
 		if get_position(my_action[1])[0] in opponent:
 			if (my_action[0] == my_action[1]):
 				new_state.set_position(my_action[1], [player, 1])
 				return(new_state)
 			else:
+				if my_action[0]>9:
+					print("L259:fuck")
 				if get_position(my_action[0]) == [player, 1]:
 					new_state.set_position(my_action[0], [" ", 1])#new_piece)
 					new_state.set_position(my_action[1], [player, 0])
@@ -276,8 +282,12 @@ class TicTacToe:
 
 		for x in range(1, 10):
 			
+			if x>9:
+				print("L259:fuck")
 			if get_position(x)[0] in opponent:
 				for attacker in attackers[x-1]:
+					if attacker>9:
+						print("L290:fuck")
 					if get_position(attacker) == [player, 1]:
 						offense.append(attacker)
 						defense.append(x)
@@ -293,8 +303,12 @@ class TicTacToe:
 
 		for x in heuristic():
 			
+			if x>9:
+				print("L307:fuck")
 			if get_position(x)[0] == opponent:
 				for attacker in attackers[x-1]:
+					if attacker>9:
+						print("L311:fuck")
 					if get_position(attacker) == [player, 1]:
 						moves.append([int(attacker), int(x)])
 			if get_position(x)[0] == " ":
@@ -393,6 +407,11 @@ class TicTacToe:
 		board = my_board
 		player = turn
 
+	func check_for_inval_pos(a:Array):
+		for x in a:
+			if x > 9:
+				print("L413: Too big:"+str(x)) 
+
 	func heuristic():
 	# Modify according to your game or needs. Returns 1 or 0 or -1 depending on your state 
 	# corresponding to win, tie or a loss.
@@ -403,18 +422,19 @@ class TicTacToe:
 		var opponent = "X"
 		if player == "X":
 			opponent = "O"
+#			return[1,2,3,4,5,6,7,8,9]
 		for x in range(3):
 			var total = 0
 			for p in range(1,4):
 				var piece = get_position((x*3)+p)[0]
 				if piece == opponent:
 					total += 1
-					if total == -2:
-						print("L413:"+str((x*3)+p))
+#					if total == -2:
+#						print("L413:"+str((x*3)+p))
 				elif piece == player:
 					total -= 1
-					if total == -2:
-						print("L417:"+str((x*3)+p))
+#					if total == -2:
+#						print("L417:"+str((x*3)+p))
 			if total == 2:
 				for b in range(1,4):
 					blocks.append((x*3)+b)
@@ -432,7 +452,7 @@ class TicTacToe:
 					if piece == opponent:
 						total += 1
 						if total == 2:
-							for b in range(1,4):
+							for b in range(3):
 								blocks.append((b*3)+x)
 					elif piece == player:
 						total -= 1
@@ -465,8 +485,10 @@ class TicTacToe:
 			blocks.append_array([3,5,7])
 		elif total == -2:
 			winning.append_array([])
+		#if ther are instant wins take them
 		if winning.empty():
-			if blocks.empty():
+			#if ther is no instand winnings that take a block
+			if player == "X" or blocks.empty():
 				return([1,2,3,4,5,6,7,8,9])
 			else:
 				#print("block")
