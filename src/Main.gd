@@ -20,7 +20,7 @@ var legal_moves =[]
 var offense
 var defense
 
-enum {PEACE, ATTACKING, DEFENDING, THINKING, AIDONE}
+enum {PEACE, ATTACKING, DEFENDING, START_THINKING, THINKING, AIDONE}
 var move_phase : = PEACE
 var selected = null
 
@@ -47,16 +47,19 @@ func _ready():
 	winDialog.get_ok().set_text("Play Again!")
 
 func _process(delta):
-	if move_phase == THINKING:
+	if move_phase == START_THINKING:
+		move_phase == THINKING
 		#print("_process mutex lock")
 		mutex.lock()
 		for btn in board:
 			if btn.id in defense:
-				btn.get_node("Attacker").visible = true
-				btn.get_node("Attacker").rotation_degrees += delta * AI_speed
+#				btn.get_node("Attacker").visible = true
+#				btn.get_node("Attacker").rotation_degrees += delta * AI_speed
+				btn.get_node("AI").visible = true
 			elif btn.piece == " ":
-				btn.get_node("Attacker").visible = true
-				btn.get_node("Attacker").rotation_degrees += -delta * AI_speed
+#				btn.get_node("Attacker").visible = true
+#				btn.get_node("Attacker").rotation_degrees += -delta * AI_speed
+				btn.get_node("AI").visible = true
 		mutex.unlock()
 		if move_phase == AIDONE:
 			thread.wait_to_finish()
@@ -83,7 +86,7 @@ func _process(delta):
 					btn.get_node("Defender").visible = false
 			else:
 				btn.get_node("Defender").visible = false
-	if false and move_phase == ATTACKING :#or (buttons[id - 1].value == "O"):
+	if move_phase == ATTACKING :#or (buttons[id - 1].value == "O"):
 		for btn in board:
 			var id = btn.id
 			if id in defense:
@@ -106,20 +109,13 @@ func _process(delta):
 func _exit_tree():
 	thread.wait_to_finish()
 
-func legal_ka(move):
-	for x in legal_moves:
-		if move == [5, 8]:
-			print("good move")
-			return(true)
-	return(false)
-
 func onTicTacBtnHover(id):
 	mutex.lock()
 	if move_phase == PEACE :#or (buttons[id - 1].value == "O"):
 		for btn in board:
 			if btn.id == 8:
 				print("L114:" + str([id, btn.id]))
-			if legal_ka([int(id), int(btn.id)]):
+			if [int(id), int(btn.id)] in legal_moves:
 				if id == btn.id + 1:
 					btn.get_node("Attacker").rotation_degrees = 180
 					btn.get_node("Attacker").visible = true
@@ -163,7 +159,9 @@ func do_move(move):
 		defense = battles[1]
 	else:
 		print("won by"+str(game.win_result()))
-		showWinDialog("Game Vver",game.player + "won!")
+		showWinDialog("Game Over",game.player + "won!")
+		return(false)
+	return(true)
 		
 
 func AI_move():
@@ -179,18 +177,20 @@ func AI_move():
 	print("AI doing " + str(move))
 	place_mark(board[move[1]- 1], "O")
 
-	do_move(move)
-	print("AI mutex lock")
-	mutex.lock()
-	move_phase = PEACE
-	for btn in board:
-		btn.get_node("Attacker").visible = false
-	mutex.unlock()
-	print("AI mutex unlock")
+	if do_move(move):
+		print("AI mutex lock")
+		mutex.lock()
+		move_phase = PEACE
+		for btn in board:
+			btn.get_node("Attacker").visible = false
+			btn.get_node("Defender").visible = false
+			btn.get_node("AI").visible = false
+		mutex.unlock()
+		print("AI mutex unlock")
 
 
 func AIturn():
-		move_phase = THINKING
+		move_phase = START_THINKING
 		thread = Thread.new()
 		thread.start(self, "AI_move")
 
@@ -219,8 +219,8 @@ func onTicTacBtnPressed( button ):
 			if btn.piece == " ":
 				print(game.player + " took " + str(button))
 				place_mark(btn, game.player)
-				do_move([button, button])
-				AIturn()
+				if do_move([button, button]):
+					AIturn()
 			elif btn.piece == game.player:
 				print("Attack who?")
 				selected = btn.id
@@ -236,23 +236,25 @@ func onTicTacBtnPressed( button ):
 				print(game.player + " attacked " + str(button))
 				place_mark(btn, game.player)
 
-				do_move([button, selected])
-
-				AIturn()
+				if do_move([button, selected]):
+					AIturn()
 
 				#reset the UI state
 				selected = null
 
-			elif btn.piece == "X":
-				do_move([selected, btn.id])
-		elif move_phase == ATTACKING:
-			print(game.player + " attacks " + str(button))
-			place_mark(btn, game.player)
-			board[selected - 1].reset()
+			else:
+				move_phase = PEACE
+		elif move_phase == ATTACKING: 
+			if [selected, button] in legal_moves:
+				print(game.player + " attacks " + str(button))
+				place_mark(btn, game.player)
+				board[selected - 1].reset()
 
-			do_move([selected, button])
-
-			AIturn()
+				if do_move([selected, button]):
+					AIturn()
+			else:
+				print("caneling Attack:"+str([selected, button]))
+				move_phase == PEACE
 
 func onPlayAgain():
 	clearBoard()

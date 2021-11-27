@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Hover.png" type="Texture" id=1]
 [ext_resource path="res://TicTacButton.gd" type="Script" id=2]
 [ext_resource path="res://Attaker.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Defender.tscn" type="PackedScene" id=4]
+[ext_resource path="res://crosshair6.png" type="Texture" id=5]
 
 [node name="TicTacButton" type="TextureButton"]
 margin_right = 128.0
@@ -35,6 +36,15 @@ margin_left = -33.0
 margin_right = -33.0
 
 [node name="Tween" type="Tween" parent="Defender/Arrow"]
+repeat = true
+playback/repeat = true
+
+[node name="AI" type="Sprite" parent="."]
+visible = false
+position = Vector2( 64, 64 )
+texture = ExtResource( 5 )
+
+[node name="Tween" type="Tween" parent="AI"]
 repeat = true
 playback/repeat = true
 

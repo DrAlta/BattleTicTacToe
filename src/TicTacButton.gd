@@ -17,8 +17,8 @@ signal custom_pressed(button)
 signal test(id)
 
 func _ready():
-	tween_node = $Attacker/Arrow/Tween
-	tween_node.interpolate_property($Attacker, "scale", 
+	tween_node = $AI/Tween
+	tween_node.interpolate_property($AI, "scale", 
 	Vector2(1,1), Vector2(0.5,0.5),
 	1.33,Tween.TRANS_SINE,Tween.EASE_OUT)
 	tween_node.start()

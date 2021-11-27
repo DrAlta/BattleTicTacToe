@@ -36,7 +36,7 @@ class MonteCarloTreeSearchNode:
 
 	func untried_actions():
 	# Returns the list of untried actions from a given state.
-		_untried_actions = state.get_legal_actions()
+		_untried_actions = state.get_good_actions()
 		return _untried_actions
 
 	func q(): 
@@ -68,7 +68,7 @@ class MonteCarloTreeSearchNode:
 		if state.debug == true:
 
 			print("62:is game over"+str(state.is_game_over()))
-		if state.get_legal_actions().size() == 0:
+		if state.get_good_actions().size() == 0:
 			return(true)
 		return(state.is_game_over())
 
@@ -79,7 +79,7 @@ class MonteCarloTreeSearchNode:
 			if state.debug == true:
 				print("71:is game over"+str(current_rollout_state.is_game_over()))
 		
-			var possible_moves = current_rollout_state.get_legal_actions()
+			var possible_moves = current_rollout_state.get_good_actions()
 		
 			var action_x = rollout_policy(possible_moves)
 			current_rollout_state = current_rollout_state.move(action_x)
@@ -146,7 +146,7 @@ class MonteCarloTreeSearchNode:
 
 	func best_action():
 	# This is the best action function which returns the node corresponding to best possible move. The step of expansion, simulation and backpropagation are carried out by the code above.
-		var simulation_no = 100
+		var simulation_no = 3000
 #		for action_x in _untried_actions:
 #			var next_state = state.move(action_x)
 #			var child_node = MonteCarloTreeSearchNode.new(next_state, self, action_x)
@@ -283,6 +283,25 @@ class TicTacToe:
 						defense.append(x)
 		return([offense, defense])
 
+	func get_good_actions(): 
+	# Modify according to your game or needs. Constructs a list of all possible actions from current state. Returns a list.
+		var moves = []
+
+		var opponent= "X"
+		if player == "X":
+			opponent= "O"
+
+		for x in heuristic():
+			
+			if get_position(x)[0] == opponent:
+				for attacker in attackers[x-1]:
+					if get_position(attacker) == [player, 1]:
+						moves.append([int(attacker), int(x)])
+			if get_position(x)[0] == " ":
+				moves.append([int(x),int(x)])
+		return(moves)
+		pass
+
 	func get_legal_actions(): 
 	# Modify according to your game or needs. Constructs a list of all possible actions from current state. Returns a list.
 		var moves = []
@@ -291,7 +310,7 @@ class TicTacToe:
 		if player == "X":
 			opponent= ["O", "c"]
 
-		for x in heuristic():
+		for x in range(1,9):
 			
 			if get_position(x)[0] in opponent:
 				for attacker in attackers[x-1]:
@@ -364,7 +383,7 @@ class TicTacToe:
 
 	func is_game_over():
 	# Modify according to your game or needs. It is the game over condition and depends on your game. Returns true or false
-		if get_legal_actions().size() == 0:
+		if get_good_actions().size() == 0:
 			return(true)
 
 		return(game_result() != 0)
@@ -385,71 +404,63 @@ class TicTacToe:
 		if player == "X":
 			opponent = "O"
 		for x in range(3):
-			var take 
 			var total = 0
 			for p in range(1,4):
 				var piece = get_position(x*3+p)[0]
-				if piece== " ":
-					take = x*3+p
-				elif piece == opponent:
+				if piece == opponent:
 					total += 1
 				elif piece == player:
 					total -= 1
 			if total == 2:
-				blocks.append(take)
+				for b in range(1,4):
+					blocks.append(x*3+b)
 			elif total == -2:
-				winning.append(take)
+				for w in range(1,4):
+					winning.append(x*3+w)
 #	for x in range(1,4):
 #		for c in range(3):
 
 		#collomes?
 		for x in range(1,4):
-			var take
 			var total = 0
 			for c in range(3):
 					var piece = get_position((c*3)+x)[0]
-					if piece== " ":
-						take = (c*3)+x
-					elif piece == opponent:
+					if piece == opponent:
 						total += 1
+						if total == 2:
+							for b in range(1,4):
+								blocks.append((c*3)+b)
 					elif piece == player:
 						total -= 1
-			if total == 2:
-				blocks.append(take)
-			elif total == -2:
-				winning.append(take)
+						if total == -2:
+							for w in range(1,4):
+								winning.append((c*3)+w)
 
 		#\diag
-		var take
 		var total = 0
 		for x in [1,5,9]:
 				var piece = get_position(x)[0]
-				if piece== " ":
-					take = x
-				elif piece == opponent:
+				if piece == opponent:
 					total += 1
 				elif piece == player:
 					total -= 1
 		if total == 2:
-			blocks.append(take)
+			blocks.append_array([1,5,9])
 		elif total == -2:
-			winning.append(take)
+			winning.append_array([1,5,9])
 
 		#/diag
-		take = null
 		total = 0
 		for x in [3,5,7]:
 				var piece = get_position(x)[0]
-				if piece== " ":
-					take = x
-				elif piece == opponent:
+				if piece == opponent:
 					total += 1
 				elif piece == player:
 					total -= 1
 		if total == 2:
-			blocks.append(take)
+			blocks.append_array([3,5,7])
 		elif total == -2:
-			winning.append(take)
+			winning.append_array([3,5,7])
 		if winning.empty():
 			if blocks.empty():
 				return([1,2,3,4,5,6,7,8,9])
