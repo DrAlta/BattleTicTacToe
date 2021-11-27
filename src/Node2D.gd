@@ -26,14 +26,14 @@ func _ready():
 #	for x in range(1,4):
 #		for c in range(3):
 #			print((c*3)+x)
-#	print(
-#		MonteCarloTreeSearch.TicTacToe.new(
-#			[[" ",1],[" ",1],["X",1],
-#			[" ",1],["X",1],[" ",1],
-#			["X",1],[" ",1],[" ",1]]
-#		).game_result()
-#	)
-	MonteCarloTreeSearch.new().main()
+	print(
+		MonteCarloTreeSearch.TicTacToe.new(
+			[["O",1],["X",1],["X",1],
+			["X",1],[" ",1],["X",1],
+			["X",1],[" ",1],["O",1]]
+		).block()
+	)
+#	MonteCarloTreeSearch.new().main()
 	print("done")
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):

@@ -280,7 +280,7 @@ class TicTacToe:
 		if player == "X":
 			opponent= ["O", "c"]
 
-		for x in range(1, 10):
+		for x in heuristic():
 			
 			if get_position(x)[0] in opponent:
 				for attacker in attackers[x-1]:
@@ -363,7 +363,7 @@ class TicTacToe:
 		board = my_board
 		player = turn
 
-	func block():
+	func heuristic():
 	# Modify according to your game or needs. Returns 1 or 0 or -1 depending on your state 
 	# corresponding to win, tie or a loss.
 		#rows
@@ -407,7 +407,46 @@ class TicTacToe:
 				blocks.append(take)
 			elif total == -2:
 				winning.append(take)
-		print("wins:"+str(winning) + " blocks:" + str(blocks))
+
+		#\diag
+		var take
+		var total = 0
+		for x in [1,5,9]:
+				var piece = get_position(x)[0]
+				if piece== " ":
+					take = x
+				elif piece == opponent:
+					total += 1
+				elif piece == player:
+					total -= 1
+		if total == 2:
+			blocks.append(take)
+		elif total == -2:
+			winning.append(take)
+
+		#/diag
+		take = null
+		total = 0
+		for x in [3,5,7]:
+				var piece = get_position(x)[0]
+				if piece== " ":
+					take = x
+				elif piece == opponent:
+					total += 1
+				elif piece == player:
+					total -= 1
+		if total == 2:
+			blocks.append(take)
+		elif total == -2:
+			winning.append(take)
+		if winning.empty():
+			if blocks.empty():
+				return([1,2,3,4,5,6,7,8,9])
+			else:
+				return(blocks)
+		else:
+			return(winning)
+#		print("wins:"+str(winning) + " blocks:" + str(blocks))
 	
 
 		#diagnals?
