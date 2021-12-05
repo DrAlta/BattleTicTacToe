@@ -246,6 +246,7 @@ func onTicTacBtnPressed( button ):
 				selected = null
 
 			else:
+				print("caneling Defense:"+str([selected, button]))
 				move_phase = PEACE
 		elif move_phase == ATTACKING: 
 			if [selected, button] in legal_moves:

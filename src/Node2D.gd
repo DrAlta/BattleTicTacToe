@@ -28,11 +28,10 @@ func _ready():
 #			print((c*3)+x)
 	print(
 		MonteCarloTreeSearch.TicTacToe.new(
-			[["X",1],[" ",1],[" ",1],
-			["O",1],["X",1],[" ",1],
-			["O",1],["X",1],["O",1]]
-		).heuristic()
-	)
+			[["O",0],[" ",1],[" ",1],
+			[" ",1],["O",0],["X",1],
+			["X",1],[" ",1],["X",1]], "O"
+		).get_good_actions())
 #	MonteCarloTreeSearch.new().main()
 	print("done")
 # Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -56,6 +56,7 @@ class MonteCarloTreeSearchNode:
 	# returned. The states which are possible from the present state are all generated
 	# and the child_node corresponding to this generated state is returned.
 		var action_x = _untried_actions.pop_back()
+		print("l59:" + str(action_x))
 		var next_state = state.move(action_x)
 		var child_node = MonteCarloTreeSearchNode.new(next_state, self, action_x)
 		children.append(child_node)
@@ -163,7 +164,10 @@ class MonteCarloTreeSearchNode:
 			choices_weights.append(
 				c._results[1] / float(c._number_of_visits)
 			) 
-		return best_child(0.0)
+		if children.empty():
+			return(self)
+		else:
+			return best_child(0.0)
 #		print("L173:"+str(children[_argmax(choices_weights)].parent_action))
 #		return(children[_argmax(choices_weights)])
 
@@ -291,8 +295,11 @@ class TicTacToe:
 						moves.append([int(attacker), int(x)])
 			if get_position(x)[0] == " ":
 				moves.append([int(x),int(x)])
-		return(moves)
-		pass
+		if moves.empty():
+			return(get_legal_actions())
+		else:
+			return(moves)
+			pass
 
 	func get_legal_actions(): 
 	# Modify according to your game or needs. Constructs a list of all possible actions from current state. Returns a list.
@@ -470,10 +477,10 @@ class TicTacToe:
 		#if ther are instant wins take them
 		if winning.empty():
 			#if ther is no instand winnings that take a block
-			if player == "X" or blocks.empty():
+			if blocks.empty():
 				return([1,2,3,4,5,6,7,8,9])
 			else:
-				#print("block")
+				print("blocks:" + str(blocks))
 				return(blocks)
 		else:
 			#print("iwin")

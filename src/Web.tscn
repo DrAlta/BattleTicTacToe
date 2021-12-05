@@ -14,6 +14,9 @@ __meta__ = {
 [node name="Board" type="Container" parent="."]
 margin_right = 40.0
 margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="TopHorizontal" type="ColorRect" parent="Board"]
 margin_left = 50.0
@@ -153,5 +156,17 @@ window_title = "Someone Won!"
 dialog_text = "Someone Won!!!"
 
 [node name="Tween" type="Tween" parent="."]
+
+[node name="Label" type="Label" parent="."]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -118.0
+margin_top = -14.0
+text = "Tic-Tac-Battle v0.6"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [connection signal="confirmed" from="WinDialog" to="." method="onPlayAgain"]

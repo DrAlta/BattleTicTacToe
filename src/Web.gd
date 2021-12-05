@@ -20,7 +20,7 @@ var legal_moves =[]
 var offense
 var defense
 
-enum {PEACE, ATTACKING, DEFENDING, START_THINKING, THINKING, AIDONE}
+enum {PEACE, ATTACKING, DEFENDING, START_THINKING, THINKING, AIDONE, CRASHED}
 var move_phase : = PEACE
 var selected = null
 
@@ -59,7 +59,14 @@ func _process(delta):
 	#				btn.get_node("Attacker").rotation_degrees += -delta * AI_speed
 				btn.get_node("AI").visible = true
 	elif move_phase == THINKING:
+		move_phase = CRASHED
 		AI_move()
+		onTicTacBtnHover(selected)
+
+	elif move_phase == CRASHED:
+		showWinDialog("Game Over","O forfeits the match!")
+
+		
 
 	if move_phase == DEFENDING: #or (buttons[id-1].value == "O"):
 		for btn in board:
@@ -85,22 +92,21 @@ func _process(delta):
 				btn.get_node("Defender").visible = false
 	if move_phase == ATTACKING :#or (buttons[id - 1].value == "O"):
 		for btn in board:
-			var id = btn.id
-			if id in defense:
-				if selected == id + 1 and selected in game.attackers[id]:
+			if [int(selected), int(btn.id)] in legal_moves:
+				if selected == btn.id + 1:
 					btn.get_node("Attacker").rotation_degrees = 180
 					btn.get_node("Attacker").visible = true
-				elif selected == id - 1 and selected in game.attackers[id]:
+				elif selected == btn.id - 1:
 					btn.get_node("Attacker").rotation_degrees = 0
 					btn.get_node("Attacker").visible = true
-				elif selected == id + 3 and selected in game.attackers[id]:
+				elif selected == btn.id + 3:
 					btn.get_node("Attacker").rotation_degrees = -90
 					btn.get_node("Attacker").visible = true
-				elif selected == id - 3 and selected in game.attackers[id]:
+				elif selected == btn.id - 3:
 					btn.get_node("Attacker").rotation_degrees = 90
 					btn.get_node("Attacker").visible = true
-				else:
-					btn.get_node("Attacker").visible = false
+			else:
+				btn.get_node("Attacker").visible = false
 	mutex.unlock()
 
 
@@ -136,13 +142,19 @@ func clearBoard():
 	# Resets the board
 	for btn in board:
 		btn.reset()
+	#reset the game
+	game = MonteCarloTreeSearch.TicTacToe.new()
+	var battles = game.get_battles()
+	offense = battles[0]
+	defense = battles[1]
+	move_phase = PEACE
+
 func do_move(move):
 	print("doing move:" + str(move))
 	if move[0] != move[1]:
 		board[move[0] - 1].reset()
 
 	game = game.move(move)
-#	game.print_board()
 	game.print_board()
 	legal_moves = game.get_legal_actions()
 	print("possible moves=" + str(legal_moves))
@@ -151,7 +163,7 @@ func do_move(move):
 		var battles = game.get_battles()
 		offense = battles[0]
 		defense = battles[1]
-	else:
+	elif result == 1:
 		print(str(game.player)+" lost")
 		move_phase = PEACE
 		showWinDialog("Game Over",game.player + "won!")
@@ -219,6 +231,7 @@ func onTicTacBtnPressed( button ):
 				place_mark(btn, game.player)
 				if do_move([button, button]):
 					AIturn()
+					selected= btn.id
 			elif btn.piece == game.player:
 				print("Attack who?")
 				selected = btn.id
@@ -232,17 +245,19 @@ func onTicTacBtnPressed( button ):
 		elif move_phase == DEFENDING:
 			if btn.piece == game.player:
 				print(game.player + " attacked " + str(button))
-				place_mark(btn, game.player)
+				place_mark(board[selected - 1], game.player)
+				btn.reset()
 
 				if do_move([button, selected]):
 					AIturn()
+					onTicTacBtnHover(btn.id)
 
 				#reset the UI state
 				selected = null
 
 			else:
 				move_phase = PEACE
-		elif move_phase == ATTACKING: 
+		elif move_phase == ATTACKING:
 			if [selected, button] in legal_moves:
 				print(game.player + " attacks " + str(button))
 				place_mark(btn, game.player)
@@ -252,7 +267,7 @@ func onTicTacBtnPressed( button ):
 					AIturn()
 			else:
 				print("caneling Attack:"+str([selected, button]))
-				move_phase == PEACE
+				move_phase = PEACE
 
 func onPlayAgain():
 	clearBoard()
