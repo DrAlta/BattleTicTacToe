@@ -480,7 +480,6 @@ class TicTacToe:
 			if blocks.empty():
 				return([1,2,3,4,5,6,7,8,9])
 			else:
-				print("blocks:" + str(blocks))
 				return(blocks)
 		else:
 			#print("iwin")

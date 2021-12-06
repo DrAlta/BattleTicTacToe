@@ -66,8 +66,6 @@ func _process(delta):
 	elif move_phase == CRASHED:
 		showWinDialog("Game Over","O forfeits the match!")
 
-		
-
 	if move_phase == DEFENDING: #or (buttons[id-1].value == "O"):
 		for btn in board:
 			var id = btn.id
@@ -159,15 +157,14 @@ func do_move(move):
 	legal_moves = game.get_legal_actions()
 	print("possible moves=" + str(legal_moves))
 	var result = game.game_result()
-	if result == 0 :
+	if game.is_game_over() :
+		move_phase = PEACE
+		showWinDialog("Game Over","Good match.")
+		return(false)
+	else:
 		var battles = game.get_battles()
 		offense = battles[0]
 		defense = battles[1]
-	elif result == 1:
-		print(str(game.player)+" lost")
-		move_phase = PEACE
-		showWinDialog("Game Over",game.player + "won!")
-		return(false)
 	return(true)
 		
 
@@ -184,21 +181,21 @@ func AI_move():
 	print("AI doing " + str(move))
 	place_mark(board[move[1]- 1], "O")
 
-	if do_move(move):
-		print("AI mutex lock")
-		mutex.lock()
-		move_phase = PEACE
-		for btn in board:
-			btn.get_node("Attacker").visible = false
-			btn.get_node("Defender").visible = false
-			btn.get_node("AI").visible = false
-			if btn.id in offense:
-				btn.set_attack_hover(true)
-			else:
-				if game.get_position(btn.id)[1] > 0:
-					btn.set_attack_hover(false)
-		mutex.unlock()
-		print("AI mutex unlock")
+	do_move(move)
+	print("AI mutex lock")
+	mutex.lock()
+	move_phase = PEACE
+	for btn in board:
+		btn.get_node("Attacker").visible = false
+		btn.get_node("Defender").visible = false
+		btn.get_node("AI").visible = false
+		if btn.id in offense:
+			btn.set_attack_hover(true)
+		else:
+			if game.get_position(btn.id)[1] > 0:
+				btn.set_attack_hover(false)
+	mutex.unlock()
+	print("AI mutex unlock")
 
 
 func AIturn():
